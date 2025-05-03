@@ -65,14 +65,14 @@ async def start(update: Update, context: CallbackContext) -> int:
 async def help(update: Update, context: CallbackContext) -> int:
     await update.message.reply_text("""*YaGe Voice Note Taker Bot*
 
-*Usage*: Send me a voice message, and I will transcribe it for you\. Note I am not a QA bot, and will not answer your questions\. I will only listen to you and transcribe your voice message, with paraphrasing from GPT\-4\.
+*Usage*: Send me a voice message, and I will transcribe it for you. Note I am not a QA bot, and will not answer your questions. I will only listen to you and transcribe your voice message, with paraphrasing from GPT-4.
 
-*Data and privacy*: I log your transcriptions and paraphrased texts, to support a future service of sending summary of your voice messages\. I will not share your data with any third party\. I will not use your data for any purposes other than to provide you with a better service\. You can always check what data are logged by sending /data command, and clear your data \(on our end\) by sending /clear command\.
+*Data and privacy*: I log your transcriptions and paraphrased texts, to support a future service of sending summary of your voice messages. I will not share your data with any third party. I will not use your data for any purposes other than to provide you with a better service. You can always check what data are logged by sending /data command, and clear your data (on our end) by sending /clear command.
 
 *Commands*: 
-/help: Display this help message\.
-/data: Display any information we had about you from our end\.
-/clear: Clear any information we had about you from our end\.""", parse_mode='MarkdownV2')
+/help: Display this help message.
+/data: Display any information we had about you from our end.
+/clear: Clear any information we had about you from our end.""", parse_mode='MarkdownV2')
     return REGULAR
 
 async def data(update: Update, context: CallbackContext) -> int:
