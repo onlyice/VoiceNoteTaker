@@ -1,10 +1,14 @@
-import openai
-import tempfile
-from flask import Flask, request, jsonify, send_from_directory
-from pydub import AudioSegment
 import json
+import tempfile
 from datetime import datetime
-from core import transcribe_voice_message, gpt_process_text, convert_audio_file_to_format
+
+from flask import Flask, jsonify, request, send_from_directory
+
+from core import (
+    convert_audio_file_to_format,
+    gpt_process_text,
+    transcribe_voice_message,
+)
 from prompts import PROMPTS
 
 app = Flask(__name__)

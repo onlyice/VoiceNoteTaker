@@ -1,39 +1,35 @@
+import asyncio
 import os
 import tempfile
-import json
-import re 
-import asyncio
-from telegram import (
-    Update,
-    ReplyKeyboardMarkup,
-    ReplyKeyboardRemove,
-    InlineKeyboardMarkup,
-    InlineKeyboardButton,
-    BotCommand,
 
+import telegram.ext.filters as filters
+from telegram import (
+    BotCommand,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    ReplyKeyboardMarkup,
+    Update,
 )
 from telegram.error import BadRequest
 from telegram.ext import (
+    Application,
+    CallbackContext,
+    CallbackQueryHandler,
     CommandHandler,
     ConversationHandler,
     MessageHandler,
-    CallbackContext,
-    Application,
     PicklePersistence,
-    CallbackQueryHandler,
 )
-import telegram.ext.filters as filters
 
 import core
 from core import (
-    gpt_process_text,
-    gpt_process_text_async,
-    convert_audio_file_to_format,
-    classify_outline_intent_mode,
-    gpt_iterate_on_thoughts,
     classify_outline_content,
+    classify_outline_intent_mode,
+    convert_audio_file_to_format,
+    gpt_iterate_on_thoughts,
+    gpt_process_text_async,
 )
-from prompts import PROMPTS, CHOICE_TO_PROMPT
+from prompts import CHOICE_TO_PROMPT, PROMPTS
 
 OUTPUT_FORMAT = "mp3"
 
@@ -60,7 +56,7 @@ async def initialize_user_data(context: CallbackContext):
     if 'history' not in context.user_data:
         context.user_data['history'] = []
     if 'active_model' not in context.user_data:
-        context.user_data['active_model'] = 'gpt-4'
+        context.user_data['active_model'] = 'gpt-4.1-mini'
 
 async def start(update: Update, context: CallbackContext) -> int:
     await update.message.reply_text('Send me a voice message, and I will transcribe it for you. Note I am not a QA bot, and will not answer your questions. I will only listen to you and transcribe your voice message, with paraphrasing from GPT-4. Type /help for more information.', reply_markup=target_usage_markup)
@@ -166,7 +162,7 @@ async def transcribe_message(user_full_name: str, update: Update, context: Callb
     # Download the voice message
     voice_data = await voice_file.download_as_bytearray()
 
-    with tempfile.NamedTemporaryFile('wb+', suffix=f'.ogg') as temp_audio_file:
+    with tempfile.NamedTemporaryFile('wb+', suffix='.ogg') as temp_audio_file:
         temp_audio_file.write(voice_data)
         temp_audio_file.seek(0)
         with tempfile.NamedTemporaryFile(suffix=f'.{OUTPUT_FORMAT}') as temp_output_file:
@@ -341,7 +337,7 @@ async def outline_transcribe_voice_message(update: Update, context: CallbackCont
 async def model_selection(update: Update, context: CallbackContext):
     await initialize_user_data(context)
     buttons = []
-    for model in ['gpt-3.5-turbo', 'gpt-4']:
+    for model in ['gpt-4.1-nano', 'gpt-4.1-mini']:
         if model == context.user_data['active_model']:
             buttons.append(InlineKeyboardButton(text='✅ ' + model, callback_data=model))
         else:
